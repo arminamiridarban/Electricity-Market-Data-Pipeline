@@ -8,7 +8,7 @@ intervals = {
     "Custom Period": "period"
 }
 
-now = pd.Timestamp.now(tz="Europe/Rome").tz_localize(None)
+now = pd.Timestamp.now().tz_localize(None)
 
 # Initialize session state for fetched data if it doesn't exist
 if "fetched_data" not in st.session_state:
@@ -52,8 +52,8 @@ mode = intervals[mode]
 
 # Checking the mode and showing the date input fields if the user selects "Custom Period"
 if mode == "period":
-    start_date = st.datetime_input("Start Date", value=now - pd.Timedelta(days=10), max_value=now - pd.Timedelta(minutes=1))
-    end_date = st.datetime_input("End Date", value=now - pd.Timedelta(days=7), max_value=now - pd.Timedelta(minutes=1))
+    start_date = st.datetime_input("Start Date", value=now - pd.Timedelta(days=2), max_value=now - pd.Timedelta(minutes=1))
+    end_date = st.datetime_input("End Date", value=now - pd.Timedelta(days=1), max_value=now - pd.Timedelta(minutes=1))
 
 # Button to trigger data fetching based on the selected mode and date inputs
 # Saving the fetched data in session state to persist it across interactions and avoid refetching on every change
