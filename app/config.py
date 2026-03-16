@@ -8,6 +8,11 @@ ALLOWED_SCHEDULE_INTERVALS = [1, 5, 15]
 DEFAULT_SCHEDULE_INTERVAL = 1
 
 def getScheduleMinutes() -> int:
+    """
+    Retrieves the schedule interval in minutes from the environment variable SCHEDULE_INTERVAL.
+    Validates that the value is an integer and is one of the allowed intervals (1, 5, 15).
+    Returns the schedule interval in minutes.
+    """
     raw_value = os.getenv("SCHEDULE_INTERVAL", str(DEFAULT_SCHEDULE_INTERVAL))
 
     try:

@@ -7,6 +7,14 @@ logger = get_logger(__name__)
 
 
 def get_data(mode="latest", start=None, end=None):
+    """
+    Fetches data from the API based on the specified mode and optional start/end parameters, then cleans and returns the data.
+    Inputs:
+    - mode: string indicating the data retrieval mode ('latest', 'lastweek', or 'period')
+    - start: optional start datetime string for 'period' mode (e.g., '2026-03-15T10:30')
+    - end: optional end datetime string for 'period' mode (e.g., '2026-03-16T10:30')
+    Output: list of dictionaries containing the cleaned data with keys 'Time Stamp', 'MTU Start', 'Area', 'Value'
+    """
     try:
         if mode == "latest":
             data = fetch_latest_data()

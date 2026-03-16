@@ -12,6 +12,10 @@ logger = get_logger(__name__)
 
 
 def _build_endpoint(mode: str) -> str:
+    """
+    Input: mode - one of "latest", "lastweek", "period"
+    Output: full URL string for the API endpoint
+    """
     if mode not in {"latest", "lastweek", "period"}:
         raise ValueError(
             f"Invalid endpoint type: {mode}. Allowed types are: latest, lastweek, period."
@@ -29,6 +33,9 @@ def _normalize_datetime(value: str) -> str:
     - 2026-03-15T10:30:00
     - 2026-03-15T10:30:00Z
     - 2026-03-15T10:30:00+01:00
+
+    Output format:
+    - 2026-03-15T10:30:00Z
     """
     if not value or not value.strip():
         raise ValueError("Datetime value cannot be empty.")
@@ -54,6 +61,13 @@ def _normalize_datetime(value: str) -> str:
 
 
 def send_request_to_api(endpoint: str, params: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+    """
+    Sends a GET request to the specified API endpoint with optional query parameters and returns the JSON response as a dictionary.
+    Inputs: 
+        - endpoint: full URL string for the API endpoint
+        - params: optional dictionary of query parameters
+    Output: dictionary containing the JSON response from the API
+    """
     try:
         response = requests.get(endpoint, params=params, timeout=DEFAULT_TIMEOUT)
         response.raise_for_status()
@@ -92,18 +106,31 @@ def send_request_to_api(endpoint: str, params: Optional[Dict[str, str]] = None) 
 
 
 def fetch_latest_data() -> Dict[str, Any]:
+    """
+    Calls the API endpoint for the latest data and returns the response as a dictionary.
+    """
     endpoint = _build_endpoint("latest")
     logger.info("Fetching latest data from %s", endpoint)
     return send_request_to_api(endpoint)
 
 
 def fetch_lastweek_data() -> Dict[str, Any]:
+    """
+    Calls the API endpoint for the last week data and returns the response as a dictionary.
+    """
     endpoint = _build_endpoint("lastweek")
     logger.info("Fetching lastweek data from %s", endpoint)
     return send_request_to_api(endpoint)
 
 
 def fetch_period_data(start: str, end: str) -> Dict[str, Any]:
+    """
+    Calls the API endpoint for the period data and returns the response as a dictionary.
+    Inputs:
+        - start: start datetime string in ISO-like format (e.g., '2026-03-15T10:30')
+        - end: end datetime string in ISO-like format (e.g., '2026-03-16T10:30')
+     Output: dictionary containing the JSON response from the API for the specified period
+    """
     if not start or not end:
         raise ValueError("Both 'start' and 'end' must be provided for period retrieval.")
 

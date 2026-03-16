@@ -2,7 +2,11 @@ from app.logger import get_logger
 logger = get_logger(__name__)
 
 def clean_data(data):
-
+    """
+    Cleans and transforms the input data into a list of dictionaries with keys: 'Time Stamp', 'MTU Start', 'Area', 'Value'.
+    Input: data - the raw data dictionary containing 'mfrrRequest' list
+    Output: list of dictionaries with cleaned and structured data
+    """
     if not data:
         raise ValueError("Data is empty or None.")
 
@@ -48,8 +52,6 @@ def clean_data(data):
         except Exception as exc:
             logger.error("An error occurred while parsing data: %s", exc)
             continue
-
-
     
     return results
     
