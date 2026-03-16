@@ -8,7 +8,7 @@ intervals = {
     "Custom Period": "period"
 }
 
-now = pd.Timestamp.now()
+now = pd.Timestamp.now(tz="Europe/Rome").tz_localize(None)
 
 # Initialize session state for fetched data if it doesn't exist
 if "fetched_data" not in st.session_state:
