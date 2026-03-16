@@ -1,0 +1,29 @@
+from app.client import fetch_latest_data, fetch_lastweek_data, fetch_period_data
+from app.parser import clean_data
+from app.exceptions import ApiRequestError
+from app.logger import get_logger
+
+logger = get_logger(__name__)
+
+
+def get_data(mode="latest", start=None, end=None):
+    try:
+        if mode == "latest":
+            data = fetch_latest_data()
+        elif mode == "lastweek":
+            data = fetch_lastweek_data()
+        elif mode == "period":
+            if not start or not end:
+                raise ValueError("Both 'start' and 'end' must be provided for period retrieval.")
+            data = fetch_period_data(start=start, end=end)
+        else:
+            raise ValueError("Invalid mode. Choose 'latest', 'lastweek', or 'period'.")
+
+        cleaned_data = clean_data(data)
+        return cleaned_data
+
+    except ValueError:
+        raise
+    except Exception as exc:
+        logger.error("An error occurred while fetching or processing data: %s", exc)
+        raise ApiRequestError("Failed to fetch data from the API.") from exc
