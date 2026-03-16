@@ -9,10 +9,22 @@ intervals = {
 }
 
 now = pd.Timestamp.now()
+
+# Initialize session state for fetched data if it doesn't exist
 if "fetched_data" not in st.session_state:
     st.session_state.fetched_data = None
 
 def create_chart(df):
+    """
+    Creates the line or bar chart based on the number of unique MTU Start timestamps in the DataFrame. If there is only one unique timestamp, a bar chart is created; otherwise, a line chart is created.
+    Input: df - a pandas DataFrame containing the data to be visualized, with columns 'MTU Start', 'Area', and 'Value'
+    Output: renders a line or bar chart in the Streamlit app based on the processed DataFrame
+
+    Chart:
+        - X axis represents 'MTU Start' timestamps
+        - Y axis represents 'Value'
+        - Different lines or bars represent different 'Area' values
+    """
     chart_df = df.copy()
     chart_df["MTU Start"] = pd.to_datetime(chart_df["MTU Start"])
     chart_df = chart_df.sort_values("MTU Start")
@@ -27,19 +39,24 @@ def create_chart(df):
     else:
         st.line_chart(chart_df)
 
-
+# Simple Title and text for the app
 st.title("Energy Market Data Dashboard")
 st.markdown("Real-Time Electricity Market Data Visualization")
+
+
 mode = st.selectbox("Select Data Retrieval Mode", list(intervals.keys()), index=0)
 start_date = None
 end_date = None
 
 mode = intervals[mode]
 
+# Checking the mode and showing the date input fields if the user selects "Custom Period"
 if mode == "period":
     start_date = st.datetime_input("Start Date", value=now - pd.Timedelta(days=10), max_value=now - pd.Timedelta(minutes=1))
     end_date = st.datetime_input("End Date", value=now - pd.Timedelta(days=7), max_value=now - pd.Timedelta(minutes=1))
 
+# Button to trigger data fetching based on the selected mode and date inputs
+# Saving the fetched data in session state to persist it across interactions and avoid refetching on every change
 if st.button("Fetch Data"):
     with st.spinner("Fetching data from the API..."):
         try:
@@ -57,7 +74,8 @@ if st.button("Fetch Data"):
         except Exception as exc:
             st.error(f"An error occurred while fetching data: {exc}")
 
-    
+
+# Display the fetched data in a table and create a chart if data is available, with options to filter by Area and Value range
 if st.session_state.fetched_data:
     df = pd.DataFrame(st.session_state.fetched_data)
 
@@ -90,3 +108,4 @@ if st.session_state.fetched_data:
             create_chart(df)
         except Exception as exc:
             st.error(f"An error occurred while creating the chart: {exc}")
+
