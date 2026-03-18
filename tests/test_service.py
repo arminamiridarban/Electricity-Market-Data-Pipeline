@@ -1,5 +1,4 @@
 import pytest
-from requests import patch
 from app.exceptions import ApiRequestError
 from app.service import get_data
 from unittest.mock import patch
